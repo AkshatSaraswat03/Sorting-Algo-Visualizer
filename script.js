@@ -256,6 +256,85 @@ async function mergeSort(heights) {
   }
 }
 
+// RADIX LSD SORT
+async function radixSortLSD(heights) {
+  var counter = [
+    []
+  ];
+  var max = 0,
+    mod = 10,
+    dev = 1; //max
+  for (var i = 0; i < heights.length; i++) {
+    if (ahead == false)
+      return;
+    if (heights[i] > max) {
+      max = heights[i];
+    }
+  }
+  // determine the large item length
+  var maxDigitLength = (max + '').length;
+  for (var i = 0; i < maxDigitLength; i++, dev *= 10, mod *= 10) {
+    for (var j = 0; j < heights.length; j++) {
+      if (ahead == false)
+        return;
+      var bucket = Math.floor((heights[j] % mod) / dev); // Formula to get the significant digit
+      if (counter[bucket] == undefined) {
+        counter[bucket] = [];
+      }
+      counter[bucket].push(heights[j]);
+    }
+    var pos = 0;
+    for (var j = 0; j < counter.length; j++) {
+      var value = undefined;
+      if (counter[j] != undefined) {
+        while ((value = counter[j].shift()) != undefined) {
+          if (ahead == false)
+            return;
+          heights[pos++] = value;
+          //console.log(heights[pos - 1]);
+          $(bars[pos - 1]).height(heights[pos - 1]);
+          await timer(8);
+        }
+      }
+    }
+  }
+}
+
+// SHELL SORT
+async function shellSort(heights) {
+  var increment = heights.length / 2;
+  while (increment > 0) {
+    for (i = increment; i < heights.length; i++) {
+      if (ahead == false)
+        return;
+      var j = i;
+      var temp = heights[i];
+
+      while (j >= increment && heights[j - increment] > temp) {
+        if (ahead == false)
+          return;
+        heights[j] = heights[j - increment];
+        $(bars[j]).height(heights[j]);
+        await timer(1);
+        j = j - increment;
+      }
+
+      heights[j] = temp;
+      $(bars[j]).height(heights[j]);
+      await timer(1);
+    }
+
+    if (increment == 2) {
+      increment = 1;
+    } else {
+      increment = parseInt(increment * 5 / 11);
+    }
+  }
+  return heights;
+}
+
+
+
 var ahead = false;
 
 $("#init").click((e) => {
